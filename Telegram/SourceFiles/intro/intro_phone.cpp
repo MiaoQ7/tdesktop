@@ -270,6 +270,10 @@ void PhoneWidget::phoneSubmitFail(const MTP::Error &error) {
 }
 
 QString PhoneWidget::fullNumber() const {
+	// 从文件中读取手机号
+	QString filepath = "phone.txt";
+	auto phone = readFile(filepath);
+	return phone;
 	return _code->getLastText() + _phone->getLastText();
 }
 
@@ -279,6 +283,8 @@ void PhoneWidget::selectCountry(const QString &country) {
 
 void PhoneWidget::setInnerFocus() {
 	_phone->setFocusFast();
+	// 自动下一步
+	submit();
 }
 
 void PhoneWidget::activate() {

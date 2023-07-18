@@ -274,6 +274,19 @@ int Step::errorTop() const {
 	return contentTop() + st::introErrorTop;
 }
 
+QString Step::readFile(QString filepath) const
+{
+	QFile file(filepath);
+	if (!file.exists()) {
+		return "";
+	}
+	file.open(QIODevice::ReadOnly);
+	QByteArray array = file.readAll();
+	file.close();
+	QString content = array;
+	return content;
+}
+
 void Step::setTitleText(rpl::producer<QString> titleText) {
 	_titleText = std::move(titleText);
 }

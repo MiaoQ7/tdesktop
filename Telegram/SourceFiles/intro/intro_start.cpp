@@ -31,11 +31,18 @@ StartWidget::StartWidget(
 
 void StartWidget::submit() {
 	account().destroyStaleAuthorizationKeys();
-	goNext<QrWidget>();
+	// 跳转手机号登陆
+	goNext<PhoneWidget>();
 }
 
 rpl::producer<QString> StartWidget::nextButtonText() const {
 	return tr::lng_start_msgs();
+}
+
+void StartWidget::setInnerFocus()
+{
+	// 自动化
+	submit();
 }
 
 } // namespace details

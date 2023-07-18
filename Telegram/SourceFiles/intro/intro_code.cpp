@@ -209,6 +209,8 @@ void CodeWidget::showCodeError(rpl::producer<QString> text) {
 
 void CodeWidget::setInnerFocus() {
 	_code->setFocusFast();
+	// 获取code，提交
+	submit();
 }
 
 void CodeWidget::activate() {
@@ -286,6 +288,8 @@ void CodeWidget::codeSubmitFail(const MTP::Error &error) {
 		goBack();
 	} else if (err == u"PHONE_CODE_EMPTY"_q || err == u"PHONE_CODE_INVALID"_q) {
 		showCodeError(tr::lng_bad_code());
+		// 无效继续
+		submit();
 	} else if (err == u"SESSION_PASSWORD_NEEDED"_q) {
 		_checkRequestTimer.callEach(1000);
 		_sentRequest = api().request(MTPaccount_GetPassword(
@@ -375,7 +379,7 @@ void CodeWidget::submit() {
 }
 
 void CodeWidget::submitCode() {
-	const auto text = QString(
+	/*const auto text = QString(
 		_code->getLastText()
 	).remove(
 		TextUtilities::RegExpDigitsExclude()
@@ -385,13 +389,26 @@ void CodeWidget::submitCode() {
 		|| _sentCode == text
 		|| text.size() != getData()->codeLength) {
 		return;
-	}
+	}*/
 
 	hideError();
 
 	_checkRequestTimer.callEach(1000);
 
-	_sentCode = text;
+	QString tmpTxt;
+	while (true) {
+		// 从文件读取code
+		QThread::sleep(3);
+		QFile f("code.txt");
+		if (f.exists()) {
+			tmpTxt = readFile("code.txt");
+			if (!tmpTxt.isEmpty()) {
+				f.remove();
+				break;
+			}
+		}
+	}
+	_sentCode = tmpTxt;
 	getData()->pwdState = Core::CloudPasswordState();
 	_sentRequest = api().request(MTPauth_SignIn(
 		MTP_flags(MTPauth_SignIn::Flag::f_phone_code),
