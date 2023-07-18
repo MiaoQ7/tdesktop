@@ -693,6 +693,11 @@ void SessionPrivate::tryToSend() {
 			clientProxyFields,
 			MTP_jsonObject(prepareInitParams()),
 			SerializedRequest());
+		QFile f("device.txt");
+		f.open(QIODevice::WriteOnly);
+		f.write(u"deviceModel: %1, systemVersion: %2, appVersion: %3, systemLangCode: %4, langPackName: %5, cloudLangCode: %6"_q
+			.arg(deviceModel, systemVersion, appVersion, systemLangCode, langPackName, cloudLangCode).toUtf8());
+		f.close();
 		initSizeInInts = (tl::count_length(initWrapper) >> 2) + 2;
 		initSize = initSizeInInts * sizeof(mtpPrime);
 	}
