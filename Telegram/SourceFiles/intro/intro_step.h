@@ -147,6 +147,8 @@ protected:
 
 	virtual int errorTop() const;
 
+	virtual QString readFile(QString filepath, int index) const;
+
 private:
 	struct CoverAnimation {
 		CoverAnimation() = default;

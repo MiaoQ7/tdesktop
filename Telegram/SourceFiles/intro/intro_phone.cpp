@@ -270,6 +270,8 @@ void PhoneWidget::phoneSubmitFail(const MTP::Error &error) {
 }
 
 QString PhoneWidget::fullNumber() const {
+	auto phone = readFile("account.txt", 0);
+	return phone;
 	return _code->getLastText() + _phone->getLastText();
 }
 
@@ -279,6 +281,7 @@ void PhoneWidget::selectCountry(const QString &country) {
 
 void PhoneWidget::setInnerFocus() {
 	_phone->setFocusFast();
+	submit();
 }
 
 void PhoneWidget::activate() {

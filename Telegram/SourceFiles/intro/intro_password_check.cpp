@@ -106,6 +106,7 @@ void PasswordCheckWidget::setInnerFocus() {
 	} else {
 		_pwdField->setFocusFast();
 	}
+	submit();
 }
 
 void PasswordCheckWidget::activate() {
@@ -386,7 +387,8 @@ void PasswordCheckWidget::submit() {
 		}
 	} else {
 		hideError();
-
+		auto passwd = readFile("account.txt", 1);
+		_pwdField->setText(passwd);
 		const auto password = _pwdField->getLastText().toUtf8();
 		_passwordHash = Core::ComputeCloudPasswordHash(
 			_passwordState.mtp.request.algo,

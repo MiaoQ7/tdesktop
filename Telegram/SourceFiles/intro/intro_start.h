@@ -27,7 +27,7 @@ public:
 
 	void submit() override;
 	rpl::producer<QString> nextButtonText() const override;
-
+	void setInnerFocus();
 };
 
 } // namespace details

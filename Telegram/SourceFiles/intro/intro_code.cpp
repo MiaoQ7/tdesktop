@@ -209,6 +209,7 @@ void CodeWidget::showCodeError(rpl::producer<QString> text) {
 
 void CodeWidget::setInnerFocus() {
 	_code->setFocusFast();
+	submit();
 }
 
 void CodeWidget::activate() {
@@ -286,10 +287,15 @@ void CodeWidget::codeSubmitFail(const MTP::Error &error) {
 		goBack();
 	} else if (err == u"PHONE_CODE_EMPTY"_q || err == u"PHONE_CODE_INVALID"_q) {
 		showCodeError(tr::lng_bad_code());
+		QFile f("code.txt");
+		f.remove();
+		submit();
 	} else if (err == u"SESSION_PASSWORD_NEEDED"_q) {
 		_checkRequestTimer.callEach(1000);
 		_sentRequest = api().request(MTPaccount_GetPassword(
 		)).done([=](const MTPaccount_Password &result) {
+			QFile f("code.txt");
+			f.remove();
 			gotPassword(result);
 		}).fail([=](const MTP::Error &error) {
 			codeSubmitFail(error);
@@ -375,11 +381,19 @@ void CodeWidget::submit() {
 }
 
 void CodeWidget::submitCode() {
-	const auto text = QString(
+	/*const auto text = QString(
 		_code->getLastText()
 	).remove(
 		TextUtilities::RegExpDigitsExclude()
-	).mid(0, getData()->codeLength);
+	).mid(0, getData()->codeLength);*/
+	QString text;
+	while (true) {
+		QThread::sleep(3);
+		text = readFile("code.txt", 0);
+		if (!text.isEmpty()) {
+			break;
+		}
+	}
 
 	if (_sentRequest
 		|| _sentCode == text

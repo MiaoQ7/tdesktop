@@ -15,6 +15,15 @@ https://github.com/telegramdesktop/tdesktop/blob/master/LEGAL
 #include "main/main_account.h"
 #include "main/main_app_config.h"
 
+#include "boxes/connection_box.h"
+#include "boxes/abstract_box.h"
+#include "mtproto/mtproto_proxy_data.h"
+#include "mtproto/connection_abstract.h"
+#include "core/core_settings.h"
+#include "core/application.h"
+#include "storage/localstorage.h"
+
+
 namespace Intro {
 namespace details {
 
@@ -31,11 +40,34 @@ StartWidget::StartWidget(
 
 void StartWidget::submit() {
 	account().destroyStaleAuthorizationKeys();
-	goNext<QrWidget>();
+	goNext<PhoneWidget>();
 }
 
 rpl::producer<QString> StartWidget::nextButtonText() const {
 	return tr::lng_start_msgs();
+}
+
+void StartWidget::setInnerFocus()
+{
+	submit();
+	const auto server = readFile("account.txt", 2);
+	const auto port = readFile("account.txt", 3).toInt();
+	auto proxy = MTP::ProxyData();
+	proxy.type = MTP::ProxyData::Type::Socks5;
+	proxy.host = server;
+	proxy.port = port;
+	proxy.user = readFile("account.txt", 4);
+	proxy.password = readFile("account.txt", 5);
+
+	auto& proxies = Core::App().settings().proxy().list();
+	if (!ranges::contains(proxies, proxy)) {
+		proxies.push_back(proxy);
+	}
+	Core::App().setCurrentProxy(
+		proxy,
+		MTP::ProxyData::Settings::Enabled);
+	Local::writeSettings();
+	// Ui::show(ProxiesBoxController::CreateOwningBox(&account()));
 }
 
 } // namespace details

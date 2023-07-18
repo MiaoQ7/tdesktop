@@ -679,6 +679,7 @@ void SessionPrivate::tryToSend() {
 				MTP_int(_options->proxy.port))
 			: MTPInputClientProxy();
 		using Flag = MTPInitConnection<SerializedRequest>::Flag;
+		// CQ ÐÞ¸Ä deviceModel¡¢systemVersion¡¢appVersion¡¢systemLangCode¡¢langPackName¡¢cloudLangCode
 		initWrapper = MTPInitConnection<SerializedRequest>(
 			MTP_flags(Flag::f_params
 				| (mtprotoProxy ? Flag::f_proxy : Flag(0))),

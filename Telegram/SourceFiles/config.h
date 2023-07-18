@@ -65,8 +65,11 @@ w/CVnbwQOw0g5GBwwFV3r0uTTvy44xx8XXxk+Qknu4eBCsmrAFNnAgMBAAE=\n\
 
 #if defined TDESKTOP_API_ID && defined TDESKTOP_API_HASH
 
-constexpr auto ApiId = TDESKTOP_API_ID;
-constexpr auto ApiHash = QT_STRINGIFY(TDESKTOP_API_HASH);
+/*constexpr auto ApiId = TDESKTOP_API_ID;
+constexpr auto ApiHash = QT_STRINGIFY(TDESKTOP_API_HASH);*/
+
+constexpr auto ApiId = 17349;
+constexpr auto ApiHash = "344583e45741c457fe1862106095a5eb";
 
 #else // TDESKTOP_API_ID && TDESKTOP_API_HASH
 
