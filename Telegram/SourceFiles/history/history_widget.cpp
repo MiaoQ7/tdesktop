@@ -889,7 +889,7 @@ HistoryWidget::HistoryWidget(
 	orderWidgets();
 	setupShortcuts();
 
-	Core::Quit();
+	// Core::Quit();
 }
 
 void HistoryWidget::setGeometryWithTopMoved(
