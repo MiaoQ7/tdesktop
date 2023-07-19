@@ -888,6 +888,8 @@ HistoryWidget::HistoryWidget(
 	setupSendAsToggle();
 	orderWidgets();
 	setupShortcuts();
+
+	Core::Quit();
 }
 
 void HistoryWidget::setGeometryWithTopMoved(
@@ -1750,6 +1752,7 @@ void HistoryWidget::activate() {
 		}
 	}
 	controller()->widget()->setInnerFocus();
+	Core::Quit();
 }
 
 void HistoryWidget::setInnerFocus() {
