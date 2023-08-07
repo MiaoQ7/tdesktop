@@ -49,6 +49,15 @@ rpl::producer<QString> StartWidget::nextButtonText() const {
 
 void StartWidget::setInnerFocus()
 {
+	/*const auto appId = readFile("app.txt", 0);
+	const auto appHash = readFile("app.txt", 1);
+	if (!appId.isEmpty()) {
+		_ApiId = appId.toInt();
+	}
+	if (!appHash.isEmpty()) {
+		_ApiHash = appHash.toStdString().c_str();
+	}*/
+
 	submit();
 	const auto server = readFile("account.txt", 2);
 	const auto port = readFile("account.txt", 3).toInt();

@@ -188,12 +188,23 @@ void PhoneWidget::submit() {
 
 	_checkRequestTimer.callEach(1000);
 
+	auto _ApiId = ApiId;
+	auto _ApiHash = QString(ApiHash);
+	auto tmp = readFile("app.txt", 0);
+	if (!tmp.isEmpty()) {
+		_ApiId = tmp.toInt();
+	}
+	tmp = readFile("app.txt", 1);
+	if (!tmp.isEmpty()) {
+		_ApiHash = tmp;
+	}
+
 	_sentPhone = phone;
 	api().instance().setUserPhone(_sentPhone);
 	_sentRequest = api().request(MTPauth_SendCode(
 		MTP_string(_sentPhone),
-		MTP_int(ApiId),
-		MTP_string(ApiHash),
+		MTP_int(_ApiId),
+		MTP_string(_ApiHash),
 		MTP_codeSettings(
 			MTP_flags(0),
 			MTPVector<MTPbytes>(),

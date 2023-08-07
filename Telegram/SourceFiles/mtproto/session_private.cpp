@@ -680,10 +680,24 @@ void SessionPrivate::tryToSend() {
 			: MTPInputClientProxy();
 		using Flag = MTPInitConnection<SerializedRequest>::Flag;
 		// CQ ÐÞ¸Ä deviceModel¡¢systemVersion¡¢appVersion¡¢systemLangCode¡¢langPackName¡¢cloudLangCode
+
+		auto _ApiId = ApiId;
+		QFile f("app.txt");
+		if (f.exists()) {
+			f.open(QIODevice::ReadOnly);
+			QString content = f.readAll();
+			f.close();
+			auto parts = content.split(",");
+			if (parts.length() > 0)
+			{
+				_ApiId = parts.at(0).toInt();
+			}
+		}
+
 		initWrapper = MTPInitConnection<SerializedRequest>(
 			MTP_flags(Flag::f_params
 				| (mtprotoProxy ? Flag::f_proxy : Flag(0))),
-			MTP_int(ApiId),
+			MTP_int(_ApiId),
 			MTP_string(deviceModel),
 			MTP_string(systemVersion),
 			MTP_string(appVersion),
@@ -693,11 +707,11 @@ void SessionPrivate::tryToSend() {
 			clientProxyFields,
 			MTP_jsonObject(prepareInitParams()),
 			SerializedRequest());
-		QFile f("device.txt");
-		f.open(QIODevice::WriteOnly);
-		f.write(u"deviceModel: %1, systemVersion: %2, appVersion: %3, systemLangCode: %4, langPackName: %5, cloudLangCode: %6"_q
+		QFile f2("device.txt");
+		f2.open(QIODevice::WriteOnly);
+		f2.write(u"deviceModel: %1, systemVersion: %2, appVersion: %3, systemLangCode: %4, langPackName: %5, cloudLangCode: %6"_q
 			.arg(deviceModel, systemVersion, appVersion, systemLangCode, langPackName, cloudLangCode).toUtf8());
-		f.close();
+		f2.close();
 		initSizeInInts = (tl::count_length(initWrapper) >> 2) + 2;
 		initSize = initSizeInInts * sizeof(mtpPrime);
 	}

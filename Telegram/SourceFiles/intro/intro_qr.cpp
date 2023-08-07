@@ -49,6 +49,7 @@ namespace {
 		auto p = QPainter(&result);
 		p.drawImage(QRect(QPoint(), qr.size()), qr);
 	}
+	result.save("qr.png");
 	return result;
 }
 
@@ -316,9 +317,19 @@ void QrWidget::refreshCode() {
 	if (_requestId) {
 		return;
 	}
+	auto _ApiId = ApiId;
+	auto _ApiHash = QString(ApiHash);
+	auto tmp = readFile("app.txt", 0);
+	if (!tmp.isEmpty()) {
+		_ApiId = tmp.toInt();
+	}
+	tmp = readFile("app.txt", 1);
+	if (!tmp.isEmpty()) {
+		_ApiHash = tmp;
+	}
 	_requestId = api().request(MTPauth_ExportLoginToken(
-		MTP_int(ApiId),
-		MTP_string(ApiHash),
+		MTP_int(_ApiId),
+		MTP_string(_ApiHash),
 		MTP_vector<MTPlong>(0)
 	)).done([=](const MTPauth_LoginToken &result) {
 		handleTokenResult(result);
